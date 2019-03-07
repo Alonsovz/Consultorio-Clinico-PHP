@@ -1,0 +1,139 @@
+CREATE DATABASE proyecto_final;
+
+USE proyecto_final;
+
+create table Roles
+(
+Id_Rol int AUTO_INCREMENT,
+Nombre varchar(100)not null,
+Apellido varchar(100)not null,
+Telefono varchar(15)not null,
+Username varchar(100)not null,
+Pass varchar(100)not null,
+nivel_acc int not null,
+
+constraint PK_Roles primary key(Id_Rol)
+);
+
+
+create table Paciente
+(
+Id_Paciente int AUTO_INCREMENT ,
+Nombre varchar(100)not null,
+Domicilio varchar(300)not null,
+Telefono varchar(15) not null,
+fecha_nac  date not null,
+estado varchar(15),
+
+constraint Pk_Paciente primary key(Id_Paciente)
+);
+
+create table Cita
+(
+Id_cita int AUTO_INCREMENT ,
+Id_Paciente int  ,
+Fecha date not null,
+Jornada varchar(50) not null,
+Estado varchar(50) not null,
+
+constraint Pk_Cita primary key(Id_Cita)
+);
+
+
+create table Expediente
+(
+Id_Exp int AUTO_INCREMENT ,
+Id_Paciente int ,
+Tipo_Sangre varchar(15),
+Num_Seguro varchar(10) not null,
+
+constraint Pk_Expediente primary key(Id_Exp)
+);
+
+create table Diagnosticos
+(
+Id_Diagnostico int AUTO_INCREMENT ,
+Id_Exp int  ,
+Descripcion varchar (600) not null,
+Medicamentos varchar (600) not null,
+Presion varchar(50) not null,
+Altura varchar(50) not null,
+Peso varchar(50) not null,
+Diag_Corto varchar(600) not null,
+Fecha_Diag varchar(25) not null,
+Hora time not null,
+
+constraint Pk_Diagnosticos primary key(Id_Diagnostico)
+);
+
+
+alter table Cita 
+add constraint fk_Paciente_Cita
+foreign key (Id_Paciente)
+references Paciente (Id_Paciente)
+on update cascade on delete cascade;
+
+alter table Expediente 
+add constraint fk_Expediente_Paciente
+foreign key (Id_Paciente)
+references Paciente (Id_Paciente)
+on update cascade on delete cascade;
+
+alter table Diagnosticos 
+add constraint fk_Expediente_Diagnostico
+foreign key (Id_Exp)
+references Expediente (Id_Exp)
+on update cascade on delete cascade;
+
+
+insert into Roles(Nombre,Apellido,Telefono,Username,Pass,nivel_acc) values('Fabio', 'Mejia','7645-3432','doctor1','123',1);
+insert into Roles(Nombre,Apellido,Telefono,Username,Pass,nivel_acc) values('Nicole', 'Arevalo','7475-3930','secre1','1234',2);
+
+
+insert into Paciente (Nombre,Domicilio,Telefono,Fecha_nac,estado) values ('Andres Lopez', 'Calle Santa Teresa casa#6','7225-4432','2000-01-23','con');
+insert into Cita (Id_Paciente,Fecha,Jornada,Estado) values (1,'2018-05-17','Matutina','Realizada');
+insert into Expediente (Id_Paciente,Tipo_Sangre,Num_Seguro) values (1,'C+','0000-2'); 
+insert into Diagnosticos (Id_Exp,Descripcion,Medicamentos,Presion,Altura,Peso,Diag_Corto,Fecha_Diag,Hora) values (1,'El paciente presenta dolor de cuerpo con alergias','Loratadina','110/70 mmHg','1.70m','90 kg','Chickungunya','2018-05-17','10:00 AM');									
+
+insert into Paciente (Nombre,Domicilio,Telefono,Fecha_nac,estado) values('Samuel Romero', 'Calle Universitaria casa#100','6489-4445','1987-04-05','con');		
+insert into Cita (Id_Paciente,Fecha,Jornada,Estado) values(2,'2018-05-18','Matutina','Realizada');
+insert into Expediente (Id_Paciente,Tipo_Sangre,Num_Seguro) values(2,'C-','0000-3'); 	
+insert into Diagnosticos (Id_Exp,Descripcion,Medicamentos,Presion,Altura,Peso,Diag_Corto,Fecha_Diag,Hora) values(2,'El paciente presenta fiebres altas y mareos','Acetaminofen','210/90 mmHg','1.89m','120 kg','Dengue','2018-05-18','09:00 AM');									
+
+insert into Paciente (Nombre,Domicilio,Telefono,Fecha_nac,estado) values ('Fabio Mejia', 'Calle de Quezalte casa#1','6280-4356','1992-01-03','con');		
+insert into Cita (Id_Paciente,Fecha,Jornada,Estado) values (3,'2018-05-20','Vespertina','Realizada');
+insert into Expediente (Id_Paciente,Tipo_Sangre,Num_Seguro)  values(3,'A-','0000-4'); 	
+insert into Diagnosticos (Id_Exp,Descripcion,Medicamentos,Presion,Altura,Peso,Diag_Corto,Fecha_Diag, Hora) values(3,'El paciente tiene ojos irritados y fiebres','Gotas','120/75 mmHg','1.79m','80 kg','Conjuntivitis','2018-05-20','02:00 PM');	
+
+insert into Paciente (Nombre,Domicilio,Telefono,Fecha_nac,estado) values('Irvin Cortez', 'Calle Universitaria casa#3','6689-3545','2002-02-21','con');		
+insert into Cita (Id_Paciente,Fecha,Jornada,Estado) values(4,'2018-05-21','Vespertina','Realizada');
+insert into Expediente (Id_Paciente,Tipo_Sangre,Num_Seguro) values(4,'B-','0000-5'); 	
+insert into Diagnosticos (Id_Exp,Descripcion,Medicamentos,Presion,Altura,Peso,Diag_Corto,Fecha_Diag,Hora) values(4,'El paciente presenta dolor en el corazon y dormecimento en la lengua','Aspirina Forte','210/80 mmHg','1.50m','10 kg','Hipertension','2018-05-21','1:00 PM');
+
+
+
+
+select a.Id_cita, a.Id_Paciente,b.Nombre,c.Id_Exp, a.Fecha, a.Hora from Cita as a 
+inner join Paciente as b on a.Id_paciente=b.Id_Paciente
+inner join Expediente as c on c.Id_paciente=b.Id_paciente  where a.estado='Pendiente' ORDER BY Id_cita
+
+
+
+
+update Cita as a
+inner join Paciente  as b on a.Id_Paciente=b.Id_Paciente
+inner join  Expediente as c on b.Id_Paciente=c.Id_Paciente
+inner join Diagnosticos as d on c.id_Exp=d.Id_exp
+set a.Estado='Realizada'
+where c.Id_Exp=1;
+
+
+select distinct a.Descripcion,a.Medicamentos,a.Presion,a.Altura,a.Peso,a.Diag_Corto, c.Fecha from diagnosticos as a
+inner join Expediente as b on a.Id_Exp=b.Id_Exp
+inner join Cita as c on b.Id_Paciente=c.Id_Paciente where b.Id_Exp=1;
+
+
+select MAX(FECHA) from Cita where Id_Paciente=1
+
+
+
